@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.ananurbaiti'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Web UI Testing
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.20.0'
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
+
+    // BDD
+    testImplementation 'io.cucumber:cucumber-java:7.14.0'
+    testImplementation 'io.cucumber:cucumber-testng:7.14.0'
+    testImplementation 'tech.grasshopper:extentreports-cucumber7-adapter:1.7.0'
+
+    // API Testing
+    testImplementation 'io.rest-assured:rest-assured:5.5.1'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
+
+    // Assertion
+    testImplementation 'org.assertj:assertj-core:3.25.1'
+    testImplementation 'org.hamcrest:hamcrest:3.0'
+
+    // Dotenv
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+    // JSON Parsing
+    testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+
+    // Faker
+    testImplementation("com.github.javafaker:javafaker:1.0.2")
+
+    // Logging
+    testImplementation 'org.slf4j:slf4j-simple:2.0.13'
+
+    // TestNG
+    testImplementation 'org.testng:testng:7.9.0'
+
+}
+
+test {
+    useTestNG()
+}
+
+tasks.register('webTest', Test) {
+    useTestNG {
+        includeGroups 'web'
+    }
+    include '**/web/runners/**'  // Only run BDD runners for web
+    testLogging.showStandardStreams = true
+    outputs.upToDateWhen { false }
+
+    // Forward all -D properties to the test JVM
+    systemProperties System.getProperties()
+
+    reports {
+        html.required.set(true)
+        //junitXml.required.set(true)
+    }
+
+    // Optional: Print browser property to verify
+    doFirst {
+        println ">>> Running web tests with browser = ${System.getProperty("browser")}"
+    }
+}
+
+tasks.register('apiTest', Test) {
+    useTestNG {
+        includeGroups 'api'
+    }
+    include '**/api/**'
+    testLogging.showStandardStreams = true
+    outputs.upToDateWhen { false }
+    reports {
+        html.required.set(true)
+        //junitXml.required.set(true)
+    }
+}
