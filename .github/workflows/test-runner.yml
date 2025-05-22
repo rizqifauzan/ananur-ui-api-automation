@@ -1,0 +1,39 @@
+name: Test Runner
+
+on:
+  push:
+    branches: [ "master" ]
+  schedule:
+    - cron: '30 7 * * *'
+
+jobs:
+  restAssured-API-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradlew
+        run: chmod +x gradlew
+
+      - name: Load Environment Variables
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Execute API Test
+        run: ./gradlew clean apiTest
+
+      - name: Archive API test results
+        uses: actions/upload-artifact@v4.3.0
+        if: always()
+        with:
+          name: api-test-report
+          path: build/reports/tests/apiTest
+
