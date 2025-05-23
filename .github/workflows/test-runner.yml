@@ -43,7 +43,7 @@ jobs:
           max_attempts: 3
           command: ./gradlew clean uiTest -Dbrowser=chrome -Dheadless=true
 
-      - name: Archive Extent Report
+      - name: Archive Extent Report Artifact
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -86,16 +86,26 @@ jobs:
         with:
           node-version: '18'
 
-      # Generate Allure Report
       - name: Install Allure CLI
-        run: |
-          npm install -g allure-commandline --save-dev
+        run: npm install -g allure-commandline --save-dev
 
       - name: Generate Allure Report
-        run: |
-          allure generate build/allure-results -o allure-report --clean
+        run: allure generate build/allure-results -o allure-report --clean
 
-      # Deploy Allure Report to GitHub Pages
+      - name: Upload Allure Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results
+          path: build/allure-results
+
+      - name: Upload Allure Report Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-report-html
+          path: allure-report
+
       - name: Deploy Allure Report to GitHub Pages
         if: always()
         uses: peaceiris/actions-gh-pages@v4
@@ -103,6 +113,3 @@ jobs:
           personal_token: ${{ secrets.PAT }}
           publish_dir: allure-report
           destination_dir: allure-report
-
-      # Optional: Deploy Allure report (requires CLI or external job)
-      # You can add an allure serve step or deploy report if needed
