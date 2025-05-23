@@ -40,3 +40,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# Gradle
+.gradle/
+build/
+
+# IntelliJ / VSCode
+.idea/
+*.iml
+.vscode/
+
+# Reports
+allure-report/
+target/

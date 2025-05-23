@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<suite name="Framework Automation API">
+    <test name="User API Test">
+        <classes>
+            <class name="api.tests.UserApiTest"/>
+        </classes>
+    </test>
+</suite>

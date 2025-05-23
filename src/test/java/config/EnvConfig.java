@@ -8,10 +8,6 @@ public class EnvConfig {
             .load();
 
     public static String getEnv(String key) {
-        String value = dotenv.get(key);
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException("Missing required environment variable: " + key);
-        }
-        return value;
+        return dotenv.get(key);
     }
 }
