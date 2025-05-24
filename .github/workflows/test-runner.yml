@@ -86,16 +86,11 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Install Allure CLI and allure-embed
-        run: |
-          npm install -g allure-commandline allure-embed
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline
 
       - name: Generate Allure Report
         run: allure generate build/allure-results -o allure-report --clean
-
-      - name: Convert Allure Report to Static HTML
-        run: |
-          allure-embed --input allure-report --output allure-report/index-static.html
 
       - name: Upload Allure Results Artifact
         uses: actions/upload-artifact@v4
@@ -109,7 +104,7 @@ jobs:
         if: always()
         with:
           name: api-test-report-static-html
-          path: allure-report/index-static.html
+          path: allure-report
 
       - name: Deploy Allure Report to GitHub Pages
         if: always()
