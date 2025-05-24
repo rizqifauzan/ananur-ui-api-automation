@@ -58,63 +58,63 @@ jobs:
           publish_dir: target
           destination_dir: ui-report
 
-    api-test:
-      runs-on: ubuntu-latest
-    
-      steps:
-        - name: Git Checkout
-          uses: actions/checkout@v4
-    
-        - name: Set up JDK 23
-          uses: actions/setup-java@v4
-          with:
-            java-version: '23'
-            distribution: 'temurin'
-    
-        - name: Setup Gradlew
-          run: chmod +x gradlew
-    
-        - name: Run API Test with Allure
-          uses: nick-invision/retry@v2
-          with:
-            timeout_minutes: 10
-            max_attempts: 3
-            command: ./gradlew clean apiTest
-    
-        - name: Setup Node.js
-          uses: actions/setup-node@v4
-          with:
-            node-version: '18'
-    
-        - name: Install Allure CLI and allure-embed
-          run: |
-            npm install -g allure-commandline allure-embed
-    
-        - name: Generate Allure Report
-          run: allure generate build/allure-results -o allure-report --clean
-    
-        - name: Convert Allure Report to Static HTML
-          run: |
-            allure-embed --input allure-report --output allure-report/index-static.html
-    
-        - name: Upload Allure Results Artifact
-          uses: actions/upload-artifact@v4
-          if: always()
-          with:
-            name: api-test-results
-            path: build/allure-results
-    
-        - name: Upload Static Allure Report Artifact
-          uses: actions/upload-artifact@v4
-          if: always()
-          with:
-            name: api-test-report-static-html
-            path: allure-report/index-static.html
+  api-test:
+    runs-on: ubuntu-latest
 
-        - name: Deploy Allure Report to GitHub Pages
-          if: always()
-          uses: peaceiris/actions-gh-pages@v4
-          with:
-            personal_token: ${{ secrets.PAT }}
-            publish_dir: allure-report
-            destination_dir: allure-report
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 23
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - name: Setup Gradlew
+        run: chmod +x gradlew
+
+      - name: Run API Test with Allure
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: ./gradlew clean apiTest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Allure CLI and allure-embed
+        run: |
+          npm install -g allure-commandline allure-embed
+
+      - name: Generate Allure Report
+        run: allure generate build/allure-results -o allure-report --clean
+
+      - name: Convert Allure Report to Static HTML
+        run: |
+          allure-embed --input allure-report --output allure-report/index-static.html
+
+      - name: Upload Allure Results Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results
+          path: build/allure-results
+
+      - name: Upload Static Allure Report Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-report-static-html
+          path: allure-report/index-static.html
+
+      - name: Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PAT }}
+          publish_dir: allure-report
+          destination_dir: allure-report
